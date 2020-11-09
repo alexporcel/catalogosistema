@@ -10,8 +10,8 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Categorías
-                        <button type="button" @click="abrirModal('categoria','registrar')" class="btn btn-secondary">
+                        <i class="fa fa-align-justify"></i> Marca
+                        <button type="button" @click="abrirModal('marca','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                     </div>
@@ -22,8 +22,8 @@
                                     <select class="form-control col-md-3" v-model="criterio">
                                     <option value="nombre">Nombre</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarCategoria(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarCategoria(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarMarca(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarMarca(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -36,25 +36,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="categoria in arrayCategoria" :key="categoria.id">
+                                <tr v-for="marca in arrayMarca" :key="marca.id">
                                     <td>
-                                        <button type="button" @click="abrirModal('categoria','actualizar',categoria)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('marca','actualizar',marca)" class="btn btn-warning btn-sm">
                                         <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <template v-if="categoria.estado">
-                                            <button type="button" class="btn btn-danger btn-sm" @click="desactivarCategoria(categoria.id)">
+                                        <template v-if="marca.estado">
+                                            <button type="button" class="btn btn-danger btn-sm" @click="desactivarMarca(marca.id)">
                                                 <i class="icon-trash"></i>
                                             </button>
                                         </template>
                                         <template v-else>
-                                            <button type="button" class="btn btn-info btn-sm" @click="activarCategoria(categoria.id)">
+                                            <button type="button" class="btn btn-info btn-sm" @click="activarMarca(marca.id)">
                                                 <i class="icon-check"></i>
                                             </button>
                                         </template>
                                     </td>
-                                    <td v-text="categoria.nombre"></td>
+                                    <td v-text="marca.nombre"></td>
                                     <td>
-                                        <div v-if="categoria.estado">
+                                        <div v-if="marca.estado">
                                             <span class="badge badge-success">Activo</span>
                                         </div>
                                         <div v-else>
@@ -97,12 +97,12 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría">
+                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de marca">
                                     </div>
                                 </div>
-                                <div v-show="errorCategoria" class="form-group row div-error">
+                                <div v-show="errorMarca" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjCategoria" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjMarca" :key="error" v-text="error">
                                         </div>
                                     </div>
                                 </div>
@@ -110,8 +110,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" v-if="tipoAccion ==1" class="btn btn-primary" @click="registrarCategoria()">Guardar</button>
-                            <button type="button" v-if="tipoAccion ==2" class="btn btn-primary" @click="actualizarCategoria()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion ==1" class="btn btn-primary" @click="registrarMarca()">Guardar</button>
+                            <button type="button" v-if="tipoAccion ==2" class="btn btn-primary" @click="actualizarMarca()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -126,14 +126,14 @@
     export default {
         data() {
             return {
-                categoria_id : 0,
+                marca_id : 0,
                 nombre : '',
-                arrayCategoria : [],
+                arrayMarca : [],
                 modal : 0,
                 tituloModal:'',
                 tipoAccion: 0,
-                errorCategoria :0,
-                errorMostrarMsjCategoria:[],
+                errorMarca :0,
+                errorMostrarMsjMarca:[],
                 pagination:{
                     'total':0,
                     'current_page':0,
@@ -173,12 +173,12 @@
             }
         },
         methods : {
-            listarCategoria (page,buscar,criterio){
+            listarMarca (page,buscar,criterio){
                 let me=this;
-                var url= '/categoria?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
+                var url= '/marca?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
-                    me.arrayCategoria = respuesta.categorias.data;
+                    me.arrayMarca = respuesta.marcas.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -190,45 +190,44 @@
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esa página
-                me.listarCategoria(page,buscar,criterio);
+                me.listarMarca(page,buscar,criterio);
             },
-            registrarCategoria(){
-                if (this.validarCategoria()){
+            registrarMarca(){
+                if (this.validarMarca()){
                     return;
                 }
                 
                 let me = this;
 
-                axios.post('/categoria/registrar',{
-                    'nombre': this.nombre,
-                    'descripcion': this.descripcion
+                axios.post('/marca/registrar',{
+                    'nombre': this.nombre
                 }).then(function (response) {
                     me.cerrarModal();
-                    me.listarCategoria(1,'','nombre');
+                    me.listarMarca(1,'','nombre');
                 }).catch(function (error) {
                     console.log(error);
                 });
             },
-            actualizarCategoria(){
-            if (this.validarCategoria()){
+            actualizarMarca(){
+            if (this.validarMarca()){
                     return;
                 }
                 
                 let me = this;
 
-                axios.put('/categoria/actualizar',{
+                axios.put('/marca/actualizar',{
                     'nombre': this.nombre,
-                    'id': this.categoria_id
+                    'id': this.marca_id
                 }).then(function (response) {
                     me.cerrarModal();
-                    me.listarCategoria(1,'','nombre');
+                    me.listarMarca(1,'','nombre');
                 }).catch(function (error) {
                     console.log(error);
                 }); 
             },
-            desactivarCategoria(id){
+            desactivarMarca(id){
             swal({
-                title: 'Esta seguro de desactivar esta categoría?',
+                title: 'Esta seguro de desactivar esta marca?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -243,10 +242,10 @@
                 if (result.value) {
                     let me = this;
 
-                    axios.put('/categoria/desactivar',{
+                    axios.put('/marca/desactivar',{
                         'id': id
                     }).then(function (response) {
-                        me.listarCategoria(1,'','nombre');
+                        me.listarMarca(1,'','nombre');
                         swal(
                         'Desactivado!',
                         'El registro ha sido desactivado con éxito.',
@@ -265,9 +264,9 @@
                 }
                 }) 
             },
-            activarCategoria(id){
+            activarMarca(id){
             swal({
-                title: 'Esta seguro de activar esta categoría?',
+                title: 'Esta seguro de activar esta marca?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -282,10 +281,10 @@
                 if (result.value) {
                     let me = this;
 
-                    axios.put('/categoria/activar',{
+                    axios.put('/marca/activar',{
                         'id': id
                     }).then(function (response) {
-                        me.listarCategoria(1,'','nombre');
+                        me.listarMarca(1,'','nombre');
                         swal(
                         'Activado!',
                         'El registro ha sido activado con éxito.',
@@ -304,15 +303,15 @@
                 }
                 }) 
             },
-            validarCategoria(){
-                this.errorCategoria=0;
-                this.errorMostrarMsjCategoria =[];
+            validarMarca(){
+                this.errorMarca=0;
+                this.errorMostrarMsjMarca =[];
 
-                if (!this.nombre) this.errorMostrarMsjCategoria.push("El nombre de la categoría no puede estar vacío.");
+                if (!this.nombre) this.errorMostrarMsjMarca.push("El nombre de la marca no puede estar vacío.");
 
-                if (this.errorMostrarMsjCategoria.length) this.errorCategoria = 1;
+                if (this.errorMostrarMsjMarca.length) this.errorMarca = 1;
 
-                return this.errorCategoria;
+                return this.errorMarca;
             },
             cerrarModal(){
                 this.modal=0;
@@ -322,13 +321,13 @@
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
-                    case "categoria":
+                    case "marca":
                     {
                         switch(accion){
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Categoría';
+                                this.tituloModal = 'Registrar Marca';
                                 this.nombre= '';
                                 this.descripcion = '';
                                 this.tipoAccion = 1;
@@ -338,9 +337,9 @@
                             {
                                 //console.log(data);
                                 this.modal=1;
-                                this.tituloModal='Actualizar categoría';
+                                this.tituloModal='Actualizar Marca';
                                 this.tipoAccion=2;
-                                this.categoria_id=data['id'];
+                                this.marca_id=data['id'];
                                 this.nombre = data['nombre'];
                                 break;
                             }
@@ -350,7 +349,7 @@
             }
         },
         mounted() {
-            this.listarCategoria(1,this.buscar,this.criterio);
+            this.listarMarca(1,this.buscar,this.criterio);
         }
     }
 </script>
