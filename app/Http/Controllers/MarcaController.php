@@ -35,7 +35,7 @@ class MarcaController extends Controller
 
     /**
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
         if(!$request->ajax()) return redirect('/');
         $marca = new Marca();

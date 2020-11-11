@@ -22,6 +22,9 @@ window.Vue = require('vue');
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('categoria', require('./components/Categoria.vue').default);
 Vue.component('marca', require('./components/Marca.vue').default);
+Vue.component('proveedor', require('./components/Proveedor.vue').default);
+Vue.component('producto', require('./components/Producto.vue').default);
+Vue.component('venta', require('./components/Venta.vue').default);
 
 
 /**
