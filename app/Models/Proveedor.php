@@ -9,8 +9,4 @@ class Proveedor extends Model
 {
     use HasFactory;
     protected $fillable = ['nombre','direccion','telefono','correo'];
-    public function compra()
-    {
-        return $this->hasMany('App\Compra');
-    }
 }

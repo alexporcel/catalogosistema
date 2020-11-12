@@ -9,7 +9,7 @@
     <meta name="author" content="Incanatoit.com">
     <meta name="keyword" content="Sistema ventas Laravel Vue Js, Sistema compras Laravel Vue Js">
     <link rel="shortcut icon" href="img/favicon.png">
-    <title>Sistema Ventas - IncanatoIT</title>
+    <title>Sistema Catalogo - Keimy</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Icons -->
     <link href="css/plantilla.css" rel="stylesheet">
@@ -19,11 +19,11 @@
     <div id="app">
     <header class="app-header navbar">
         <button class="navbar-toggler mobile-sidebar-toggler d-lg-none mr-auto" type="button">
-          <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
         </button>
         <a class="navbar-brand" href="#"></a>
         <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button">
-          <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-icon"></span>
         </button>
         <ul class="nav navbar-nav d-md-down-none">
             <li class="nav-item px-3">

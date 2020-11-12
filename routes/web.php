@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,9 +12,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/main', function () {
     return view('contenido/contenido');
-});
+})->name('main');
 
 Route::get('categoria',             'App\Http\Controllers\CategoriaController@index');
 Route::post('/categoria/registrar', 'App\Http\Controllers\CategoriaController@create');
@@ -44,3 +45,9 @@ Route::post('/venta/registrar', 'App\Http\Controllers\VentaController@create');
 Route::put('/venta/actualizar', 'App\Http\Controllers\VentaController@update');
 Route::put('/venta/desactivar', 'App\Http\Controllers\VentaController@desactivar');
 Route::put('/venta/activar',    'App\Http\Controllers\VentaController@activar');
+
+
+Route::get('/',       'App\Http\Controllers\Auth\LoginController@showLoginForm');
+Route::post('/login', 'App\Http\Controllers\Auth\LoginController@login')->name('login');
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

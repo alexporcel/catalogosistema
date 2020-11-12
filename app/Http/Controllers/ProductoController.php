@@ -15,13 +15,19 @@ class ProductoController extends Controller
         
         if ($buscar==''){
             $producto = Producto::join('categorias','productos.idcategoria','=','categorias.id')
-            ->select('productos.id','productos.idcategoria','productos.nombre as nombre_categoria','productos.nombre','productos.descripcion','productos.precioventa','productos.cantidad','productos.foto','productos.estado')
+            ->join('marcas','productos.idmarca','=','marcas.id')
+            ->select('productos.id','productos.idcategoria','categorias.nombre as nombre_categoria','marcas.nombre as nombre_marca',
+            'productos.nombre','productos.descripcion','productos.precioventa','productos.cantidad',
+            'productos.foto','productos.estado')
             ->orderBy('productos.id', 'desc')->paginate(5);
         }
         else{
             $producto = Producto::join('categorias','productos.idcategoria','=','categorias.id')
-            ->select('productos.id','productos.idcategoria','productos.nombre as nombre_categoria','productos.nombre','productos.descripcion','productos.precioventa','productos.cantidad','productos.foto','productos.estado')
-            ->where($criterio, 'like', '%'. $buscar . '%')->orderBy('id', 'desc')
+            ->join('marcas','productos.idmarca','=','marcas.id')
+            ->select('productos.id','productos.idcategoria','categorias.nombre as nombre_categoria','marcas.nombre as nombre_marca',
+            'productos.nombre','productos.descripcion','productos.precioventa','productos.cantidad',
+            'productos.foto','productos.estado')
+            ->where('productos.'.$criterio, 'like', '%'. $buscar . '%')
             ->orderBy('productos.id', 'desc')->paginate(5);
         }
         //if($producto->hash_file('foto')){

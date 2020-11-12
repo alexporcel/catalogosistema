@@ -12,6 +12,6 @@ class Compra extends Model
         'idproveedor','precio','descripcion','cantidad','fecha'
     ];
     public function proveedor(){
-        return $this->belongsTo('App\Proveedor');
+        return $this->belongsTo('App\Models\Proveedor');
     }
 }
