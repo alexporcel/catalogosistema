@@ -16,12 +16,12 @@ class CreateVentasTable extends Migration
         Schema::create('ventas', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->double('stock',25);
+            $table->integer('stock');
             $table->string('nombre', 50);
-            $table->double('preciou',20);
-            $table->double('preciot',20);
-            $table->double('telefono',20);
-            $table->string('descripcion',100);
+            $table->decimal('preciou',11,2);
+            $table->decimal('preciot',11,2);
+            $table->integer('telefono');
+            $table->string('descripcion',200);
         });
     }
 

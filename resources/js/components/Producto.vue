@@ -2,9 +2,7 @@
             <main class="main">
             <!-- Breadcrumb -->
             <ol class="breadcrumb">
-                <li class="breadcrumb-item">Home</li>
-                <li class="breadcrumb-item"><a href="#">Admin</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
+                <li class="breadcrumb-item"><a href="/">Escritorio</a></li>
             </ol>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
@@ -33,8 +31,10 @@
                                     <th>Opciones</th>
                                     <th>Imagen</th>
                                     <th>Nombre</th>
+                                    <th>Marca</th>
+                                    <th>Categoria</th>
                                     <th>Descripcion</th>
-                                    <th>Cantidad</th>
+                                    <th>Stock</th>
                                     <th>Precio Venta</th>
                                     <th>Estado</th>
                                 </tr>
@@ -58,6 +58,8 @@
                                     </td>
                                     <td v-text="producto.foto"></td>
                                     <td v-text="producto.nombre"></td>
+                                    <td v-text="producto.nombre_marca"></td>
+                                    <td v-text="producto.nombre_categoria"></td>
                                     <td v-text="producto.descripcion"></td>
                                     <td v-text="producto.cantidad"></td>
                                     <td v-text="producto.precioventa"></td>
@@ -102,6 +104,24 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Marca</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" v-model="idmarca">
+                                            <option value="0" disabled>Seleccione</option>
+                                            <option v-for="marcas in arrayMarca" :key="marcas.id" :value="marcas.id" v-text="marcas.nombre"></option>
+                                        </select>                                        
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" v-model="idcategoria">
+                                            <option value="0" disabled>Seleccione</option>
+                                            <option v-for="categoria in arrayCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
+                                        </select>                                        
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                     <div class="col-md-9">
@@ -159,6 +179,10 @@
         data() {
             return {
                 producto_id : 0,
+                idmarca:0,
+                nombre_marca : '',
+                idcategoria : 0,
+                nombre_categoria : '',
                 nombre : '',
                 descripcion:'',
                 foto:'',
@@ -180,7 +204,9 @@
                 },
                 offset:3,
                 criterio : 'nombre',
-                buscar : ''
+                buscar : '',
+                arrayMarca :[],
+                arrayCategoria :[]
             }
         },
         computed:{
@@ -221,6 +247,30 @@
                     console.log(error);
                 });
             },
+            selectMarca(){
+                let me=this;
+                var url= '/marca/selectMarca';
+                axios.get(url).then(function (response) {
+                    //console.log(response);
+                    var respuesta= response.data;
+                    me.arrayMarca = respuesta.marcas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectCategoria(){
+                let me=this;
+                var url= '/categoria/selectCategoria';
+                axios.get(url).then(function (response) {
+                    //console.log(response);
+                    var respuesta= response.data;
+                    me.arrayCategoria = respuesta.categorias;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             cambiarPagina(page,buscar,criterio){
                 let me = this;
                 //Actualiza la página actual
@@ -236,6 +286,8 @@
                 let me = this;
 
                 axios.post('/producto/registrar',{
+                    'idmarca': this.idmarca,
+                    'idcategoria': this.idcategoria,
                     'nombre': this.nombre,
                     'descripcion': this.descripcion,
                     'foto' : this.foto,
@@ -256,6 +308,8 @@
                 let me = this;
 
                 axios.put('/producto/actualizar',{
+                    'idmarca': this.idmarca,
+                    'idcategoria': this.idcategoria,
                     'nombre': this.nombre,
                     'descripcion': this.descripcion,
                     'foto': this.foto,
@@ -352,8 +406,10 @@
                 this.errorProducto=0;
                 this.errorMostrarMsjProducto =[];
 
+                if (this.idmarca==0) this.errorMostrarMsjMarca.push("Seleccione una marca.");
+                if (this.idcategoria==0) this.errorMostrarMsjArticulo.push("Seleccione una categoría.");
                 if (!this.nombre) this.errorMostrarMsjProducto.push("El nombre de la producto no puede estar vacío.");
-
+                
                 if (this.errorMostrarMsjProducto.length) this.errorProducto = 1;
 
                 return this.errorProducto;
@@ -362,10 +418,14 @@
                 this.modal=0;
                 this.tituloModal='';
                 this.nombre='';
+                this.idmarca=0;
+                this.nombre_marca='';
+                this.idcategoria= 0;
+                this.nombre_categoria = '';
                 this.descripcion='';
                 this.foto='';
-                this.cantidad='';
-                this.precioventa='';
+                this.cantidad=0;
+                this.precioventa=0;
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
@@ -376,6 +436,10 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Producto';
+                                this.idmarca=0;
+                                this.nombre_marca='';
+                                this.idcategoria=0;
+                                this.nombre_categoria='';
                                 this.nombre= '';
                                 this.descripcion = '';
                                 this.foto='';
@@ -391,16 +455,20 @@
                                 this.tituloModal='Actualizar producto';
                                 this.tipoAccion=2;
                                 this.producto_id=data['id'];
+                                this.idmarca=data['idmarca'];
+                                this.idcategoria=data['idcategoria'];
                                 this.nombre = data['nombre'];
-                                this.descripcion = 'descripcion';
-                                this.foto='foto';
-                                this.cantidad='cantidad';
-                                this.precioventa='precioventa';
+                                this.descripcion = data['descripcion'];
+                                this.foto=data['foto'];
+                                this.cantidad=data['cantidad'];
+                                this.precioventa=data['precioventa'];
                                 break;
                             }
                         }
                     }
                 }
+                this.selectMarca();
+                this.selectCategoria();
             }
         },
         mounted() {

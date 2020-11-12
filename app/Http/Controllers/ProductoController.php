@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
-use App\Models\Proveedor;
 use Illuminate\Http\Request;
 
 class ProductoController extends Controller
@@ -15,10 +14,15 @@ class ProductoController extends Controller
         $criterio = $request->criterio;
         
         if ($buscar==''){
-            $producto = Producto::orderBy('id', 'desc')->paginate(5);
+            $producto = Producto::join('categorias','productos.idcategoria','=','categorias.id')
+            ->select('productos.id','productos.idcategoria','productos.nombre as nombre_categoria','productos.nombre','productos.descripcion','productos.precioventa','productos.cantidad','productos.foto','productos.estado')
+            ->orderBy('productos.id', 'desc')->paginate(5);
         }
         else{
-            $producto = Proveedor::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id', 'desc')->paginate(5);
+            $producto = Producto::join('categorias','productos.idcategoria','=','categorias.id')
+            ->select('productos.id','productos.idcategoria','productos.nombre as nombre_categoria','productos.nombre','productos.descripcion','productos.precioventa','productos.cantidad','productos.foto','productos.estado')
+            ->where($criterio, 'like', '%'. $buscar . '%')->orderBy('id', 'desc')
+            ->orderBy('productos.id', 'desc')->paginate(5);
         }
         //if($producto->hash_file('foto')){
         //    $producto['foto']=$request->file('foto')->store('uploads','public');
@@ -39,6 +43,8 @@ class ProductoController extends Controller
     {
         if(!$request->ajax()) return redirect('/');
         $producto = new Producto();
+        $producto->idmarca = $request->idmarca;
+        $producto->idcategoria = $request->idcategoria;
         $producto->nombre = $request->nombre;
         $producto->descripcion = $request->descripcion;
         $producto->foto = $request->foto;
@@ -51,6 +57,8 @@ class ProductoController extends Controller
     {
         if(!$request->ajax()) return redirect('/');
         $producto = Producto::findOrFail($request->id);
+        $producto->idmarca = $request->idmarca;
+        $producto->idcategoria = $request->idcategoria;
         $producto->nombre = $request->nombre;
         $producto->descripcion = $request->descripcion;
         $producto->foto = $request->foto;

@@ -1,7 +1,7 @@
 @extends('plantilla')
     @section('contenido')
     <template v-if="menu==0"> 
-    <example-component></example-component>
+    <h1>Pagina Principal</h1>
     </template>
     <template v-if="menu==1"> 
     <categoria></categoria>
@@ -10,10 +10,10 @@
     <marca></marca>
     </template>
     <template v-if="menu==3"> 
-    <producto></producto>
+    <proveedor></proveedor>
     </template>
     <template v-if="menu==4"> 
-    <proveedor></proveedor>
+    <producto></producto>
     </template>
     <template v-if="menu==5"> 
     <venta></venta>

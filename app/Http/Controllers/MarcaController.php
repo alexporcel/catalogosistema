@@ -35,6 +35,13 @@ class MarcaController extends Controller
 
     /**
      */
+    public function selectMarca(Request $request){
+        
+        if(!$request->ajax()) return redirect('/');
+        $marcas = Marca::where('estado','=','1')
+        ->select('id','nombre')->orderBy('nombre', 'asc')->get();
+        return ['marcas' => $marcas];
+    }
     public function create(Request $request)
     {
         if(!$request->ajax()) return redirect('/');

@@ -20,12 +20,14 @@ Route::post('/categoria/registrar', 'App\Http\Controllers\CategoriaController@cr
 Route::put('/categoria/actualizar', 'App\Http\Controllers\CategoriaController@update');
 Route::put('/categoria/desactivar', 'App\Http\Controllers\CategoriaController@desactivar');
 Route::put('/categoria/activar',    'App\Http\Controllers\CategoriaController@activar');
+Route::get('categoria/selectCategoria', 'App\Http\Controllers\CategoriaController@selectCategoria');
 
 Route::get('marca',             'App\Http\Controllers\MarcaController@index');
 Route::post('/marca/registrar', 'App\Http\Controllers\MarcaController@create');
 Route::put('/marca/actualizar', 'App\Http\Controllers\MarcaController@update');
 Route::put('/marca/desactivar', 'App\Http\Controllers\MarcaController@desactivar');
 Route::put('/marca/activar',    'App\Http\Controllers\MarcaController@activar');
+Route::get('marca/selectMarca', 'App\Http\Controllers\MarcaController@selectMarca');
 
 Route::get('proveedor',             'App\Http\Controllers\ProveedorController@index');
 Route::post('/proveedor/registrar', 'App\Http\Controllers\ProveedorController@create');

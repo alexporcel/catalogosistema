@@ -2030,8 +2030,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2293,8 +2291,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -2800,10 +2796,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       producto_id: 0,
+      idmarca: 0,
+      nombre_marca: '',
+      idcategoria: 0,
+      nombre_categoria: '',
       nombre: '',
       descripcion: '',
       foto: '',
@@ -2825,7 +2845,9 @@ __webpack_require__.r(__webpack_exports__);
       },
       offset: 3,
       criterio: 'nombre',
-      buscar: ''
+      buscar: '',
+      arrayMarca: [],
+      arrayCategoria: []
     };
   },
   computed: {
@@ -2872,6 +2894,28 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
+    selectMarca: function selectMarca() {
+      var me = this;
+      var url = '/marca/selectMarca';
+      axios.get(url).then(function (response) {
+        //console.log(response);
+        var respuesta = response.data;
+        me.arrayMarca = respuesta.marcas;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    selectCategoria: function selectCategoria() {
+      var me = this;
+      var url = '/categoria/selectCategoria';
+      axios.get(url).then(function (response) {
+        //console.log(response);
+        var respuesta = response.data;
+        me.arrayCategoria = respuesta.categorias;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     cambiarPagina: function cambiarPagina(page, buscar, criterio) {
       var me = this; //Actualiza la página actual
 
@@ -2886,6 +2930,8 @@ __webpack_require__.r(__webpack_exports__);
 
       var me = this;
       axios.post('/producto/registrar', {
+        'idmarca': this.idmarca,
+        'idcategoria': this.idcategoria,
         'nombre': this.nombre,
         'descripcion': this.descripcion,
         'foto': this.foto,
@@ -2905,6 +2951,8 @@ __webpack_require__.r(__webpack_exports__);
 
       var me = this;
       axios.put('/producto/actualizar', {
+        'idmarca': this.idmarca,
+        'idcategoria': this.idcategoria,
         'nombre': this.nombre,
         'descripcion': this.descripcion,
         'foto': this.foto,
@@ -2981,6 +3029,8 @@ __webpack_require__.r(__webpack_exports__);
     validarProducto: function validarProducto() {
       this.errorProducto = 0;
       this.errorMostrarMsjProducto = [];
+      if (this.idmarca == 0) this.errorMostrarMsjMarca.push("Seleccione una marca.");
+      if (this.idcategoria == 0) this.errorMostrarMsjArticulo.push("Seleccione una categoría.");
       if (!this.nombre) this.errorMostrarMsjProducto.push("El nombre de la producto no puede estar vacío.");
       if (this.errorMostrarMsjProducto.length) this.errorProducto = 1;
       return this.errorProducto;
@@ -2989,10 +3039,14 @@ __webpack_require__.r(__webpack_exports__);
       this.modal = 0;
       this.tituloModal = '';
       this.nombre = '';
+      this.idmarca = 0;
+      this.nombre_marca = '';
+      this.idcategoria = 0;
+      this.nombre_categoria = '';
       this.descripcion = '';
       this.foto = '';
-      this.cantidad = '';
-      this.precioventa = '';
+      this.cantidad = 0;
+      this.precioventa = 0;
     },
     abrirModal: function abrirModal(modelo, accion) {
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -3005,6 +3059,10 @@ __webpack_require__.r(__webpack_exports__);
                 {
                   this.modal = 1;
                   this.tituloModal = 'Registrar Producto';
+                  this.idmarca = 0;
+                  this.nombre_marca = '';
+                  this.idcategoria = 0;
+                  this.nombre_categoria = '';
                   this.nombre = '';
                   this.descripcion = '';
                   this.foto = '';
@@ -3021,16 +3079,21 @@ __webpack_require__.r(__webpack_exports__);
                   this.tituloModal = 'Actualizar producto';
                   this.tipoAccion = 2;
                   this.producto_id = data['id'];
+                  this.idmarca = data['idmarca'];
+                  this.idcategoria = data['idcategoria'];
                   this.nombre = data['nombre'];
-                  this.descripcion = 'descripcion';
-                  this.foto = 'foto';
-                  this.cantidad = 'cantidad';
-                  this.precioventa = 'precioventa';
+                  this.descripcion = data['descripcion'];
+                  this.foto = data['foto'];
+                  this.cantidad = data['cantidad'];
+                  this.precioventa = data['precioventa'];
                   break;
                 }
             }
           }
       }
+
+      this.selectMarca();
+      this.selectCategoria();
     }
   },
   mounted: function mounted() {
@@ -3049,8 +3112,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -3361,8 +3422,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -40661,13 +40720,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
-      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Home")]),
-      _vm._v(" "),
       _c("li", { staticClass: "breadcrumb-item" }, [
-        _c("a", { attrs: { href: "#" } }, [_vm._v("Admin")])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Dashboard")])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("Escritorio")])
+      ])
     ])
   },
   function() {
@@ -41230,13 +41285,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
-      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Home")]),
-      _vm._v(" "),
       _c("li", { staticClass: "breadcrumb-item" }, [
-        _c("a", { attrs: { href: "#" } }, [_vm._v("Admin")])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Dashboard")])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("Escritorio")])
+      ])
     ])
   },
   function() {
@@ -41463,6 +41514,16 @@ var render = function() {
                     }),
                     _vm._v(" "),
                     _c("td", {
+                      domProps: { textContent: _vm._s(producto.nombre_marca) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: {
+                        textContent: _vm._s(producto.nombre_categoria)
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
                       domProps: { textContent: _vm._s(producto.descripcion) }
                     }),
                     _vm._v(" "),
@@ -41639,6 +41700,128 @@ var render = function() {
                     }
                   },
                   [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Marca")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.idmarca,
+                                expression: "idmarca"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.idmarca = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "0", disabled: "" } },
+                              [_vm._v("Seleccione")]
+                            ),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayMarca, function(marcas) {
+                              return _c("option", {
+                                key: marcas.id,
+                                domProps: {
+                                  value: marcas.id,
+                                  textContent: _vm._s(marcas.nombre)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Categoría")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.idcategoria,
+                                expression: "idcategoria"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.idcategoria = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "0", disabled: "" } },
+                              [_vm._v("Seleccione")]
+                            ),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayCategoria, function(categoria) {
+                              return _c("option", {
+                                key: categoria.id,
+                                domProps: {
+                                  value: categoria.id,
+                                  textContent: _vm._s(categoria.nombre)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
                       _c(
                         "label",
@@ -41908,13 +42091,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
-      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Home")]),
-      _vm._v(" "),
       _c("li", { staticClass: "breadcrumb-item" }, [
-        _c("a", { attrs: { href: "#" } }, [_vm._v("Admin")])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Dashboard")])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("Escritorio")])
+      ])
     ])
   },
   function() {
@@ -41929,9 +42108,13 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Nombre")]),
         _vm._v(" "),
+        _c("th", [_vm._v("Marca")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Categoria")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Descripcion")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Cantidad")]),
+        _c("th", [_vm._v("Stock")]),
         _vm._v(" "),
         _c("th", [_vm._v("Precio Venta")]),
         _vm._v(" "),
@@ -42516,13 +42699,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
-      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Home")]),
-      _vm._v(" "),
       _c("li", { staticClass: "breadcrumb-item" }, [
-        _c("a", { attrs: { href: "#" } }, [_vm._v("Admin")])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Dashboard")])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("Escritorio")])
+      ])
     ])
   },
   function() {
@@ -43188,13 +43367,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("ol", { staticClass: "breadcrumb" }, [
-      _c("li", { staticClass: "breadcrumb-item" }, [_vm._v("Home")]),
-      _vm._v(" "),
       _c("li", { staticClass: "breadcrumb-item" }, [
-        _c("a", { attrs: { href: "#" } }, [_vm._v("Admin")])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "breadcrumb-item active" }, [_vm._v("Dashboard")])
+        _c("a", { attrs: { href: "/" } }, [_vm._v("Escritorio")])
+      ])
     ])
   },
   function() {
